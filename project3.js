@@ -3,7 +3,7 @@ let points = [];
 let fallingPoints = [];
 
 function preload() {
-  font = loadFont('Bebas.ttf'); 
+  customFont = loadFont('./iterations/Bebas.ttf');
 }
 
 function setup() {

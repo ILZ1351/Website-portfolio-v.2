@@ -2,7 +2,7 @@ let customFont;
 let angleOffset = 0.05; // initialize the angle offset for the swaying motion
 
 function preload() {
-  customFont = loadFont('Bebas.ttf');
+  customFont = loadFont('./iterations/Bebas.ttf');
 }
 
 function setup() {
