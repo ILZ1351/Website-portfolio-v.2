@@ -3,17 +3,22 @@ let points = [];
 let fallingPoints = [];
 
 function preload() {
-  font = loadFont('./iterations/Bebas.ttf'); // Corrected variable name
+  font = loadFont('./iterations/Bebas.ttf'); /
 }
 
 function setup() {
   createCanvas(400, 400);
   textSize(100);
   textAlign(CENTER, CENTER);
-  points = font.textToPoints('LIGHT', 150, 150, 150, { sampleFactor: 0.2 }); // Added missing comma
   
-  for (let p of points) {
-    fallingPoints.push({ x: p.x, y: p.y, speed: random(1, 3), glow: random(100, 255) });
+  if (font) { 
+    points = font.textToPoints('LIGHT', 150, 150, 150, { sampleFactor: 0.2 });
+    
+    for (let p of points) {
+      fallingPoints.push({ x: p.x, y: p.y, speed: random(1, 3), glow: random(100, 255) });
+    }
+  } else {
+    console.error("Font failed to load.");
   }
 }
 
@@ -33,4 +38,3 @@ function draw() {
     }
   }
 }
-
