@@ -3,14 +3,14 @@ let points = [];
 let fallingPoints = [];
 
 function preload() {
-  customFont = loadFont('./iterations/Bebas.ttf');
+  font = loadFont('./iterations/Bebas.ttf'); // Corrected variable name
 }
 
 function setup() {
   createCanvas(400, 400);
   textSize(100);
   textAlign(CENTER, CENTER);
-  points = font.textToPoints('LIGHT', 150,150, 150, { sampleFactor: 0.2 });
+  points = font.textToPoints('LIGHT', 150, 150, 150, { sampleFactor: 0.2 }); // Added missing comma
   
   for (let p of points) {
     fallingPoints.push({ x: p.x, y: p.y, speed: random(1, 3), glow: random(100, 255) });
@@ -33,3 +33,4 @@ function draw() {
     }
   }
 }
+
