@@ -8,7 +8,7 @@ let customFont;
 let points = [];
 
 function preload() {
-  customFont = loadFont('Bebas.ttf');
+  customFont = loadFont('./iterations/Bebas.ttf');
 }
 
 function setup() {
