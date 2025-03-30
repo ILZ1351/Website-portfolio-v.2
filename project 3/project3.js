@@ -158,3 +158,8 @@ function processGestures(hand, handIndex) {
 
   formantFilter.freq(map(pinchDist, 0, 50, 400, 2500));
 }
+
+
+function mouseClicked() {
+  userStartAudio();
+}
