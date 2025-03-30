@@ -1,3 +1,4 @@
+let video;
 let detector;
 let hands = [];
 let synth1, synth2;
@@ -73,7 +74,7 @@ async function detectHands() {
 function draw() {
   background(0);
 
- 
+  // Check if video is ready
   console.log("Video Ready State:", video.elt.readyState);
 
   if (video.elt.readyState === 4) {
@@ -140,7 +141,7 @@ function processGestures(hand, handIndex) {
   if (pinchDist < 50) {
     let targetPitchShift = map(pinchDist, 0, 50, -12, 22);
     effects.pitchShift = lerp(effects.pitchShift, targetPitchShift, 0.6);
-    synth.play(C${3+int(effects.pitchShift / 12)}, 0.4, 0.1);
+    synth.play(`C${3 + int(effects.pitchShift / 12)}`, 0.4, 0.1);
     effects.colorShift = map(pinchDist, 0, 50, 255, 0);
   }
 
