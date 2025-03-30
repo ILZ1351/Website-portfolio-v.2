@@ -17,18 +17,23 @@ let effects = {
 
 async function setup() {
   createCanvas(640, 480, WEBGL);
-
-  console.log("Initializing video...");
-
-  video = createCapture(VIDEO, function(stream) {
-    console.log("Camera access granted ✅");
-  });
   
+  if (typeof p5.FFT === "undefined") {
+    console.error("p5.sound.js is missing! Make sure to include p5.sound.min.js.");
+    return;
+  }
+
+  video = createCapture(VIDEO);
   video.size(640, 480);
   video.hide();
 
   synth1 = new p5.MonoSynth();
   synth2 = new p5.MonoSynth();
+
+  fft = new p5.FFT();
+  fft.setInput(synth1); 
+
+  console.log("✅ FFT initialized:", fft);
 
   reverb = new p5.Reverb();
   distortion = new p5.Distortion();
@@ -48,9 +53,6 @@ async function setup() {
   compressor.set(0.6, 0.2, 8, -18, 0.5);
   synth1.connect(compressor);
   synth2.connect(compressor);
-
-  fft = new p5.FFT();
-  fft.setInput(synth1);
 
   const model = handPoseDetection.SupportedModels.MediaPipeHands;
   detector = await handPoseDetection.createDetector(model, {
@@ -72,7 +74,7 @@ async function detectHands() {
 function draw() {
   background(0);
 
-  // 🔍 Debugging: Check if video is ready
+  // Check if video is ready
   console.log("Video Ready State:", video.elt.readyState);
 
   if (video.elt.readyState === 4) {
@@ -82,7 +84,7 @@ function draw() {
     plane(width, height);
     pop();
   } else {
-    console.log("⚠️ Video not ready! Waiting...");
+    console.log("Video not ready");
   }
 
   drawHands();
