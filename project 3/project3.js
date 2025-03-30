@@ -33,7 +33,7 @@ async function setup() {
   fft = new p5.FFT();
   fft.setInput(synth1); 
 
-  console.log("✅ FFT initialized:", fft);
+  console.log("FFT initialized:", fft);
 
   reverb = new p5.Reverb();
   distortion = new p5.Distortion();
@@ -141,7 +141,7 @@ function processGestures(hand, handIndex) {
   if (pinchDist < 50) {
     let targetPitchShift = map(pinchDist, 0, 50, -12, 22);
     effects.pitchShift = lerp(effects.pitchShift, targetPitchShift, 0.6);
-    synth.play(C${3 + int(effects.pitchShift / 12)}, 0.4, 0.1);
+    synth.play(`C${3 + int(effects.pitchShift / 12)}`, 0.4, 0.1);
     effects.colorShift = map(pinchDist, 0, 50, 255, 0);
   }
 
