@@ -15,8 +15,8 @@ let effects = {
   distortionAmount: 0,
 };
 
-async function setup() {
-  createCanvas(640, 480, WEBGL);
+function setup() {
+  createCanvas(windowWidth, windowHeight, WEBGL);
   
   if (typeof p5.FFT === "undefined") {
     console.error("p5.sound.js is missing! Make sure to include p5.sound.min.js.");
@@ -24,7 +24,7 @@ async function setup() {
   }
 
   video = createCapture(VIDEO);
-  video.size(640, 480);
+  video.size(width, height);  // Set video capture size to match canvas
   video.hide();
 
   synth1 = new p5.MonoSynth();
@@ -81,7 +81,7 @@ function draw() {
     push();
     translate(-width / 2, -height / 2, 0);
     texture(video);
-    plane(width, height);
+    plane(width, height);  // Stretch video to fill the entire plane
     pop();
   } else {
     console.log("Video not ready");
@@ -157,4 +157,10 @@ function processGestures(hand, handIndex) {
   }
 
   formantFilter.freq(map(pinchDist, 0, 50, 400, 2500));
+}
+
+// Optional: Handle resizing the window
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  video.size(windowWidth, windowHeight); // Ensure the video captures at the new size
 }
