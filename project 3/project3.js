@@ -1,4 +1,3 @@
-let video;
 let detector;
 let hands = [];
 let synth1, synth2;
@@ -15,8 +14,8 @@ let effects = {
   distortionAmount: 0,
 };
 
-function setup() {
-  createCanvas(windowWidth, windowHeight, WEBGL);
+async function setup() {
+  createCanvas(640, 480, WEBGL);
   
   if (typeof p5.FFT === "undefined") {
     console.error("p5.sound.js is missing! Make sure to include p5.sound.min.js.");
@@ -24,7 +23,7 @@ function setup() {
   }
 
   video = createCapture(VIDEO);
-  video.size(width, height);  // Set video capture size to match canvas
+  video.size(640, 480);
   video.hide();
 
   synth1 = new p5.MonoSynth();
@@ -74,14 +73,14 @@ async function detectHands() {
 function draw() {
   background(0);
 
-  // Check if video is ready
+ 
   console.log("Video Ready State:", video.elt.readyState);
 
   if (video.elt.readyState === 4) {
     push();
     translate(-width / 2, -height / 2, 0);
     texture(video);
-    plane(width, height);  // Stretch video to fill the entire plane
+    plane(width, height);
     pop();
   } else {
     console.log("Video not ready");
@@ -141,7 +140,7 @@ function processGestures(hand, handIndex) {
   if (pinchDist < 50) {
     let targetPitchShift = map(pinchDist, 0, 50, -12, 22);
     effects.pitchShift = lerp(effects.pitchShift, targetPitchShift, 0.6);
-    synth.play(`C${3 + int(effects.pitchShift / 12)}`, 0.4, 0.1);
+    synth.play(C${3+int(effects.pitchShift / 12)}, 0.4, 0.1);
     effects.colorShift = map(pinchDist, 0, 50, 255, 0);
   }
 
@@ -157,10 +156,4 @@ function processGestures(hand, handIndex) {
   }
 
   formantFilter.freq(map(pinchDist, 0, 50, 400, 2500));
-}
-
-// Optional: Handle resizing the window
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  video.size(windowWidth, windowHeight); // Ensure the video captures at the new size
 }
