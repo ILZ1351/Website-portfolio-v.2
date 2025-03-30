@@ -15,9 +15,10 @@ let effects = {
   distortionAmount: 0,
 };
 
-async function setup() {
+function setup() {
   createCanvas(640, 480, WEBGL);
   
+
   if (typeof p5.FFT === "undefined") {
     console.error("p5.sound.js is missing! Make sure to include p5.sound.min.js.");
     return;
@@ -27,6 +28,7 @@ async function setup() {
   video.size(640, 480);
   video.hide();
 
+
   synth1 = new p5.MonoSynth();
   synth2 = new p5.MonoSynth();
 
@@ -34,6 +36,11 @@ async function setup() {
   fft.setInput(synth1); 
 
   console.log("✅ FFT initialized:", fft);
+}
+
+
+  synth1 = new p5.MonoSynth();
+  synth2 = new p5.MonoSynth();
 
   reverb = new p5.Reverb();
   distortion = new p5.Distortion();
@@ -53,6 +60,9 @@ async function setup() {
   compressor.set(0.6, 0.2, 8, -18, 0.5);
   synth1.connect(compressor);
   synth2.connect(compressor);
+
+  fft = new p5.FFT();
+  fft.setInput(synth1);
 
   const model = handPoseDetection.SupportedModels.MediaPipeHands;
   detector = await handPoseDetection.createDetector(model, {
