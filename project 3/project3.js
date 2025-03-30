@@ -15,7 +15,7 @@ let effects = {
   distortionAmount: 0,
 };
 
-function setup() {
+async function setup() {
   createCanvas(640, 480, WEBGL);
   
 
@@ -24,29 +24,26 @@ function setup() {
     return;
   }
 
+
   video = createCapture(VIDEO);
   video.size(640, 480);
   video.hide();
 
-
+  
   synth1 = new p5.MonoSynth();
   synth2 = new p5.MonoSynth();
 
+  
   fft = new p5.FFT();
   fft.setInput(synth1); 
 
-  console.log("✅ FFT initialized:", fft);
-}
-
-
-  synth1 = new p5.MonoSynth();
-  synth2 = new p5.MonoSynth();
-
+  // audio effects
   reverb = new p5.Reverb();
   distortion = new p5.Distortion();
   formantFilter = new p5.Filter('bandpass');
   compressor = new p5.Compressor();
 
+  // connect effects to synths
   reverb.process(synth1, 2, 3);
   reverb.process(synth2, 2, 3);
   distortion.process(synth1, 0.2);
@@ -61,9 +58,7 @@ function setup() {
   synth1.connect(compressor);
   synth2.connect(compressor);
 
-  fft = new p5.FFT();
-  fft.setInput(synth1);
-
+  // hand tracking detector
   const model = handPoseDetection.SupportedModels.MediaPipeHands;
   detector = await handPoseDetection.createDetector(model, {
     runtime: 'mediapipe',
@@ -84,7 +79,7 @@ async function detectHands() {
 function draw() {
   background(0);
 
-  // Check if video is ready
+
   console.log("Video Ready State:", video.elt.readyState);
 
   if (video.elt.readyState === 4) {
@@ -148,6 +143,7 @@ function processGestures(hand, handIndex) {
   let fistClosed = pinchDist < 50 && dist(indexFinger.x, indexFinger.y, pinky.x, pinky.y) < 10;
   let openHand = pinchDist > 50 && dist(indexFinger.x, indexFinger.y, pinky.x, pinky.y) > 100;
 
+  // pinch gesture (to change pitch)
   if (pinchDist < 50) {
     let targetPitchShift = map(pinchDist, 0, 50, -12, 22);
     effects.pitchShift = lerp(effects.pitchShift, targetPitchShift, 0.6);
@@ -155,16 +151,19 @@ function processGestures(hand, handIndex) {
     effects.colorShift = map(pinchDist, 0, 50, 255, 0);
   }
 
+  // open hand gesture (to change reverb)
   if (openHand) {
     effects.reverb = lerp(effects.reverb, 30, 0.5);
     reverb.amp(map(effects.reverb, 0, 50, 0.5, 20));
   }
 
+  //  fist closed gesture (to apply distortion)
   if (fistClosed) {
     let targetDistortionAmount = map(pinchDist, 0, 50, 0.2, 0.8);
     effects.distortionAmount = lerp(effects.distortionAmount, targetDistortionAmount, 0.1);
     distortion.amp(effects.distortionAmount);
   }
 
+  // frequency changes based on pinch distance
   formantFilter.freq(map(pinchDist, 0, 50, 400, 2500));
 }
