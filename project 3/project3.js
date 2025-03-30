@@ -15,12 +15,23 @@ let effects = {
   distortionAmount: 0,
 };
 
+function preload() {
+  if (!p5.SoundFile) {
+    console.error("p5.sound.js is not loaded! Make sure to include it in your HTML.");
+  }
+}
+
 async function setup() {
   createCanvas(640, 480, WEBGL);
-  video = createCapture({ video: { facingMode: 'user' } });
+  video = createCapture({
+    video: {
+      facingMode: 'user',
+      width: 640,
+      height: 480
+    }
+  });
   video.size(640, 480);
   video.hide();
-  video.elt.play();
 
   synth1 = new p5.MonoSynth();
   synth2 = new p5.MonoSynth();
@@ -44,7 +55,7 @@ async function setup() {
   synth1.connect(compressor);
   synth2.connect(compressor);
 
-  fft = new p5.FFT();
+  fft = new p5.FFT(); // Initialize FFT after synths
   fft.setInput(synth1);
 
   const model = handPoseDetection.SupportedModels.MediaPipeHands;
@@ -54,9 +65,7 @@ async function setup() {
     solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands'
   });
 
-  video.elt.onloadeddata = () => {
-    detectHands();
-  };
+  detectHands();
 }
 
 async function detectHands() {
@@ -68,16 +77,19 @@ async function detectHands() {
 
 function draw() {
   background(0);
-  tint(effects.colorShift, 255, 255);
-  push();
-  translate(-width / 2, -height / 2, 0);
-  texture(video);
-  plane(width, height);
-  pop();
-  
+
+  if (video.elt.readyState === 4) {
+    push();
+    translate(-width / 2, -height / 2, 0);
+    texture(video);
+    plane(width, height);
+    pop();
+  } else {
+    console.log("Waiting for video feed...");
+  }
+
   drawHands();
-  
-  spectrum = fft.analyze();  
+  spectrum = fft.analyze();
   drawVisualizer();
 }
 
