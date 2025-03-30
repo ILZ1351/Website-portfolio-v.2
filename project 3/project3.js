@@ -17,9 +17,10 @@ let effects = {
 
 async function setup() {
   createCanvas(640, 480, WEBGL);
-  video = createCapture(VIDEO);
+  video = createCapture({ video: { facingMode: 'user' } });
   video.size(640, 480);
   video.hide();
+  video.elt.play();
 
   synth1 = new p5.MonoSynth();
   synth2 = new p5.MonoSynth();
@@ -29,7 +30,7 @@ async function setup() {
   formantFilter = new p5.Filter('bandpass');
   compressor = new p5.Compressor();
 
-  reverb.process(synth1, 2, 3); // Smoother reverb
+  reverb.process(synth1, 2, 3);
   reverb.process(synth2, 2, 3);
   distortion.process(synth1, 0.2);
   distortion.process(synth2, 0.2);
@@ -39,7 +40,7 @@ async function setup() {
   synth1.connect(formantFilter);
   synth2.connect(formantFilter);
 
-  compressor.set(0.6, 0.2, 8, -18, 0.5); // Softer compression
+  compressor.set(0.6, 0.2, 8, -18, 0.5);
   synth1.connect(compressor);
   synth2.connect(compressor);
 
@@ -53,7 +54,9 @@ async function setup() {
     solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands'
   });
 
-  detectHands();
+  video.elt.onloadeddata = () => {
+    detectHands();
+  };
 }
 
 async function detectHands() {
@@ -66,9 +69,14 @@ async function detectHands() {
 function draw() {
   background(0);
   tint(effects.colorShift, 255, 255);
-  image(video, -width / 2, -height / 2, width, height);
+  push();
+  translate(-width / 2, -height / 2, 0);
+  texture(video);
+  plane(width, height);
+  pop();
+  
   drawHands();
-
+  
   spectrum = fft.analyze();  
   drawVisualizer();
 }
