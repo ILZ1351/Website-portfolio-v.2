@@ -76,7 +76,7 @@ let questions = [
 let descriptions = {
   "Hardcore Punk": "You are Hardcore Punk: raw, intense, and all about action. You never back down from a fight and you wear your convictions like a battle cry.",
   "Crust Punk": "You are Crust Punk: gritty, anarchic, and fiercely independent. You dig deep, plan smart, and live off the grid, fighting for your beliefs.",
-  "Riot Grrrl": "You are Riot Grrrl: bold, expressive, and revolutionary. You channel your voice through art, music, and zines to spark change.",
+  "Riot Girl": "You are Riot Girl: bold, expressive, and revolutionary. You channel your voice through art, music, and zines to spark change.",
   "Pop Punk": "You are Pop Punk: playful, emotional, and full of catchy chaos. You ride life’s rollercoaster with a mix of angst and optimism."
 };
 
@@ -84,6 +84,9 @@ let currentQuestion = 0;
 let answers = {};
 let showResult = false;
 let resultType = "";
+
+let hoveredOption = -1; // To track which option is being hovered
+let inStartScreen = true; // To determine if the user is on the start screen
 
 function setup() {
   createCanvas(800, 600);
@@ -95,42 +98,90 @@ function draw() {
   background(20);
   fill(255);
 
-  if (showResult) {
-    // CENTERED RESULT DISPLAY
+  if (inStartScreen) {
+    // Starting screen
     textAlign(CENTER, CENTER);
-    textSize(28);
-    text("You are", width / 2, height / 2 - 120);
-
     textSize(32);
-    text(resultType, width / 2, height / 2 - 70);
+    text("What type of punk are you?", width / 2, height / 2 - 100);
 
-    textSize(18);
-    textAlign(CENTER, TOP);
-    text(descriptions[resultType], width / 2, height / 2 - 30, 500, 200);
-
-    textAlign(CENTER, BOTTOM);
-    text("Refresh to take the quiz again.", width / 2, height - 40);
+    // Start button
+    fill(100);
+    rect(width / 2 - 100, height / 2 + 50, 200, 50, 10);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("Start", width / 2, height / 2 + 75);
+    
     return;
   }
 
-  // DISPLAY QUESTIONS AND OPTIONS
+  if (showResult) {
+    // Result screen
+    textAlign(CENTER, CENTER);
+    textSize(28);
+    text("You are", width / 2, height / 2 - 160);
+
+    textSize(32);
+    text(resultType, width / 2, height / 2 - 110);
+
+    textSize(18);
+    textAlign(CENTER, TOP);
+    text(descriptions[resultType], width / 2 - 250, height / 2 - 60, 500, 300);
+
+    // "Return" Button
+    fill(100);
+    rect(width / 2 - 100, height - 100, 200, 50, 10);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("Return", width / 2, height - 90);
+
+    return;
+  }
+
+  // Question screen
   let q = questions[currentQuestion];
   textAlign(LEFT, TOP);
   textSize(24);
-  text(q.q, 50, 40, width - 100);
+  text(q.q, 40, 40, width - 100);
 
   textSize(18);
   for (let i = 0; i < q.options.length; i++) {
     let y = 120 + i * 60;
-    fill(50);
+    let isHovered = (mouseX > 50 && mouseX < width - 50 && mouseY > y && mouseY < y + 50);
+    if (isHovered) {
+      hoveredOption = i; // Update the hovered option
+    }
+
+    // Highlight the hovered option with a grey box
+    fill(isHovered ? 200 : 50); // Grey when hovered, dark otherwise
     rect(50, y, width - 100, 50, 10);
+
     fill(255);
     text(q.options[i].text, 60, y + 15);
   }
 }
 
 function mousePressed() {
-  if (showResult) return;
+  if (inStartScreen) {
+    // When the "Start" button is clicked, begin the quiz
+    if (mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height / 2 + 50 && mouseY < height / 2 + 100) {
+      inStartScreen = false;
+      return;
+    }
+  }
+
+  if (showResult) {
+    // Handle "Return" button press
+    if (mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height - 100 && mouseY < height - 50) {
+      currentQuestion = 0;
+      answers = {};
+      showResult = false;
+      inStartScreen = true; // Go back to the start screen
+      return;
+    }
+    return;
+  }
 
   let q = questions[currentQuestion];
   for (let i = 0; i < q.options.length; i++) {
@@ -160,3 +211,15 @@ function getResult() {
   }
   return result;
 }
+
+
+    // save to localstorage
+    localStorage.setItem("punkResult", result);
+    return result;
+   
+    if (currentQuestion >= questions.length) {
+      showResult = true;
+      resultType = getResult();
+      window.location.href = "result.html"; // Redirect!
+    }
+  
