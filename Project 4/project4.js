@@ -76,7 +76,7 @@ let questions = [
 let descriptions = {
   "Hardcore Punk": "You are Hardcore Punk: raw, intense, and all about action. You never back down from a fight and you wear your convictions like a battle cry.",
   "Crust Punk": "You are Crust Punk: gritty, anarchic, and fiercely independent. You dig deep, plan smart, and live off the grid, fighting for your beliefs.",
-  "Riot Girl": "You are Riot Girl: bold, expressive, and revolutionary. You channel your voice through art, music, and zines to spark change.",
+  "Riot Grrrl": "You are Riot Grrrl: bold, expressive, and revolutionary. You channel your voice through art, music, and zines to spark change.",
   "Pop Punk": "You are Pop Punk: playful, emotional, and full of catchy chaos. You ride life’s rollercoaster with a mix of angst and optimism."
 };
 
@@ -150,11 +150,10 @@ function draw() {
     let y = 120 + i * 60;
     let isHovered = (mouseX > 50 && mouseX < width - 50 && mouseY > y && mouseY < y + 50);
     if (isHovered) {
-      hoveredOption = i; // Update the hovered option
+      hoveredOption = i;
     }
 
-    // Highlight the hovered option with a grey box
-    fill(isHovered ? 200 : 50); // Grey when hovered, dark otherwise
+    fill(isHovered ? 200 : 50);
     rect(50, y, width - 100, 50, 10);
 
     fill(255);
@@ -164,7 +163,6 @@ function draw() {
 
 function mousePressed() {
   if (inStartScreen) {
-    // When the "Start" button is clicked, begin the quiz
     if (mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height / 2 + 50 && mouseY < height / 2 + 100) {
       inStartScreen = false;
       return;
@@ -172,12 +170,11 @@ function mousePressed() {
   }
 
   if (showResult) {
-    // Handle "Return" button press
     if (mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height - 100 && mouseY < height - 50) {
       currentQuestion = 0;
       answers = {};
       showResult = false;
-      inStartScreen = true; // Go back to the start screen
+      inStartScreen = true;
       return;
     }
     return;
@@ -209,20 +206,6 @@ function getResult() {
       result = type;
     }
   }
-  return result;
-}
-
-
-function getResult() {
-  let max = 0;
-  let result = "";
-  for (let type in answers) {
-    if (answers[type] > max) {
-      max = answers[type];
-      result = type;
-    }
-  }
   localStorage.setItem("punkResult", result); // Save it
   return result;
 }
-
