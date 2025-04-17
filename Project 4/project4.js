@@ -213,13 +213,16 @@ function getResult() {
 }
 
 
-    // save to localstorage
-    localStorage.setItem("punkResult", result);
-    return result;
-   
-    if (currentQuestion >= questions.length) {
-      showResult = true;
-      resultType = getResult();
-      window.location.href = "result.html"; // Redirect!
+function getResult() {
+  let max = 0;
+  let result = "";
+  for (let type in answers) {
+    if (answers[type] > max) {
+      max = answers[type];
+      result = type;
     }
-  
+  }
+  localStorage.setItem("punkResult", result); // Save it
+  return result;
+}
+
