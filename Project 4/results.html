@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Punk Result</title>
+  <style>
+    body { font-family: monospace; background: black; color: lime; text-align: center; padding: 50px; }
+    .result { font-size: 1.5em; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <h1>Your Inner Punk Is...</h1>
+  <div class="result" id="resultDisplay">Loading...</div>
+
+  <script>
+    const answer = localStorage.getItem('punkAnswer');
+    const resultText = {
+      'guitar': "You're the Rebel Rockstar 🎸",
+      'spray paint': "You're the Street Artist 🎨",
+      'megaphone': "You're the Protest Leader 📣"
+    };
+
+    document.getElementById('resultDisplay').textContent = resultText[answer] || "Unknown Punk Vibe 🤔";
+  </script>
+</body>
+</html>
